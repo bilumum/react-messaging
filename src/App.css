@@ -36,3 +36,24 @@
     transform: rotate(360deg);
   }
 }
+
+.app-container{
+  height: 100vh;
+}
+
+.app-container__layout{
+  height: 100%;
+}
+
+.message-container{
+  height: 100%;
+}
+
+.message-container__chatArea{
+  height: 90%;
+}
+
+.message-container__messageArea{
+  height: 10%;
+}
+ 
