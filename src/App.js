@@ -11,6 +11,8 @@ import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 
+import SideBar from './components/sidebar'
+
 const useStyles = makeStyles((theme) => ({
   container: {
     display: 'grid',
@@ -36,7 +38,7 @@ function App() {
     <Container maxWidth="lg" className="app-container">
       <Grid container className="app-container__layout">
         <Grid item xs={3}>
-            <Paper className={classes.paper}>Users</Paper>
+            <SideBar></SideBar>
         </Grid>
         <Grid item xs={9}>
             <Grid container className="message-container">

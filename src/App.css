@@ -56,4 +56,8 @@
 .message-container__messageArea{
   height: 10%;
 }
- 
+
+.sidebar{
+  height: 100%;
+  background-color: rgb(68 71 93);
+}

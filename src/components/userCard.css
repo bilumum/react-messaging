@@ -1,0 +1,20 @@
+.userCard{
+    display: flex;
+    align-items: center;
+}
+
+.userInfo{
+    display: flex;
+    flex-direction: column;
+}
+
+.userInfo__userName{
+    color: white;
+    font-size: 12px;
+}
+
+.userInfo__conversationText{
+    color: white;
+    font-size: 10px;
+    line-height: 18px;
+}
