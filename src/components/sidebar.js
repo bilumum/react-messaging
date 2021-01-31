@@ -1,16 +1,13 @@
 import React from 'react';
 import CurrentUser from './currentUser';
-import UserCard from './userCard'
+import UserCardList from './userCardList'
 
 class SideBar extends React.Component{
     render(){
         return (
             <div className="sidebar">
                 <CurrentUser></CurrentUser>
-                <UserCard></UserCard>
-                <UserCard></UserCard>
-                <UserCard></UserCard>
-                <UserCard></UserCard>
+                <UserCardList></UserCardList>                
             </div>
         );
     }
