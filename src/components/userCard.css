@@ -1,6 +1,12 @@
 .userCard{
     display: flex;
     align-items: center;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.userCard[data-selected="true"]{
+    background-color: rgba(0,0,0,0.2);
 }
 
 .userInfo{
@@ -9,12 +15,15 @@
 }
 
 .userInfo__userName{
-    color: white;
+    /* color: white; */
     font-size: 12px;
+    font-weight: bold;
+    line-height: 24px;
 }
 
 .userInfo__conversationText{
-    color: white;
+    color: rgb(0 0 0 / 55%);
     font-size: 10px;
     line-height: 18px;
+    font-style: italic;
 }

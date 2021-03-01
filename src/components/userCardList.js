@@ -1,23 +1,40 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
 import UserCard from './userCard';
-
- 
-const testData = [
-    {name: "Muhittin Noylan", avatar_url: "https://ui-avatars.com/api/?name=Muhittin+Noylan&size=48", company: "@facebook"},
-    {name: "Özge Altuntaş", avatar_url: "https://ui-avatars.com/api/?name=Özge+Altuntaş&size=48", company: "Humu"},
-    {name: "Atakan Altuntaş", avatar_url: "https://ui-avatars.com/api/?name=Atakan+Altuntaş&size=48", company: "Facebook"},
-];
- 
+import { useRadioGroup } from '@material-ui/core';
 
 class UserCardList extends React.Component{
+
+    state = { selectedUser: -1 };
+
+    handleSelect = (userId) => {      
+        this.setState({
+            selectedUser: userId
+        });
+    }
+
     render(){
-       
-        return (
-            <div>
-                {testData.map(profile => <UserCard key={1} {...profile}></UserCard>)}
-            </div>
-        );
+        const onlineUsers = this.props.onlineUsers;
+        if (onlineUsers.length > 0) {
+            return (
+                <div>
+                    {onlineUsers.map(profile => {
+                        let isSelected = profile.userId === this.state.selectedUser;
+                        return <UserCard key={profile.userId} isSelected={isSelected} handleSelect={this.handleSelect} {...profile}></UserCard>
+                        })
+                    }
+                </div>
+            );
+        }
+        else{
+            return (
+                <div style={{width:'100%',textAlign:'center'}}>
+                    <span>Waiting for people....</span>
+                </div>
+            );
+
+        }
     }
 }
 

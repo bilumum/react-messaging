@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
 import Avatar from './avatar'
@@ -15,19 +16,20 @@ const info = {
 }
 
 const userName = {
-    color: 'white',
+    // color: 'white',
     fontSize: '12px'
 }
   
 
 class CurrentUser extends React.Component{
     render(){
-        // const profileURL = this.props.URL || 'https://www.placecage.com/48/48';
+        const user = this.props;
+        let avatar_url = `https://ui-avatars.com/api/?name=${user.name}+${user.surname}&size=48`;
         
         return (
             <div style={divStyle}>
-                <Avatar></Avatar>
-                <span style={userName}>Ümit Altuntaş</span>
+                <Avatar URL={avatar_url}></Avatar>
+                <span style={userName}>{user.name} {user.surname}</span>
             </div>
         );
     }

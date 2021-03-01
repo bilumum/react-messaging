@@ -1,5 +1,6 @@
 const rootApiUrl = "http://localhost:8080";
 const addUserApiUrl = rootApiUrl + "/users";
+const getOnlineUsersApiUrl = rootApiUrl + "/users";
 
 async function addUserToChat(data = {}){
 
@@ -14,11 +15,38 @@ async function addUserToChat(data = {}){
     }
     else{
         console.log(response);
-        throw new Error('Server error. Check console for details.');
+        var result = await response.json();
+        var errorMessage = 'Server error. Check console for details.';
+        if(result && result.error){
+            errorMessage = result.error;
+        }
+        throw new Error(errorMessage);
+    }
+}
+
+async function getOnlineUsers(){
+
+    const response = await fetch(getOnlineUsersApiUrl, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    });
+
+    if(response.ok) {
+        return response.json();
+    }
+    else{
+        console.log(response);
+        var result = await response.json();
+        var errorMessage = 'Server error. Check console for details.';
+        if(result && result.error){
+            errorMessage = result.error;
+        }
+        throw new Error(errorMessage);
     }
 }
 
 export{
-    addUserToChat
+    addUserToChat,
+    getOnlineUsers
 }
 

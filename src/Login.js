@@ -12,6 +12,8 @@ import {addUserToChat} from './api/Api';
 
 import { useHistory } from "react-router-dom";
 import { Redirect, Route, NavLink } from "react-router-dom";
+import Socket from './api/socket';
+import { PinDropSharp } from '@material-ui/icons';
 
 const btnStyle = {
     float: 'right'
@@ -34,7 +36,6 @@ function Login(){
     const [surname, setSurname] = useState("");
     const [alertOpen, setOpen] = useState(false);
     const [error, setError] = useState(false);
-    const [loggedIn, setLoggedIn] = useState(false);
 
     let history = useHistory();
 
@@ -46,9 +47,17 @@ function Login(){
         try{
             setOpen(false);
             var result = await addUserToChat({ name: name, surname: surname });
-            setLoggedIn(true);
             console.log(result);
-            history.push("/chat");
+            Socket.auth = result;
+            Socket.connect();
+           
+            //history.push("/chat");
+
+            history.push({ 
+                pathname: '/chat',
+                user: result
+            });
+               
         }
         catch(err){
             console.log(err);
@@ -59,7 +68,7 @@ function Login(){
 
     return(
         <Container maxWidth="xs" style={containerStyle}>
-            <h1>#CometoChat</h1>
+            <h1 style={{textAlign:'center'}}>#CometoChat</h1>
             <Collapse in={alertOpen}>
                 <Alert  style={formMargin} severity="error"
                 action={
@@ -93,8 +102,6 @@ function Login(){
             <Button variant="contained" color="primary" style={btnStyle} disabled={!validateForm()} onClick={handleClick}>
                 Join Chat
             </Button>
-
-            {/* { loggedIn ? <Redirect to="/chat" /> : null } */}
         </Container>
     );
 
