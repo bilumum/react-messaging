@@ -41,10 +41,10 @@ const useStyles = makeStyles((theme) => ({
 
     const [onlineUsers, setOnlineUsers] = useState([]);
     const [needUpdate, setNeedUpdate] = useState(true);
-    //const [currentUser, setCurrentUser] = useState(props.location.state);
-
+    const [toUser, setToUser] = useState("");
+    const [conversation, setConversation] = useState([]);
+    
     useEffect(() => {
-      console.log("useEffect running...");
       if(needUpdate){
         const fetchData = async () => {
           let users = await getOnlineUsers();
@@ -57,17 +57,47 @@ const useStyles = makeStyles((theme) => ({
       }
 
       Socket.on("NEW_JOIN", handleNewJoins);
+      Socket.on("PRIVATE_MESSAGE", handleComingMessage);
 
       return () => {
-        console.log("UseEffect CLEARED....");
         Socket.off('NEW_JOIN', handleNewJoins);
+        Socket.off('PRIVATE_MESSAGE', handleComingMessage);
       };
         
     }, [needUpdate]);
 
     function handleNewJoins(message) {
-      console.log(message);
       setNeedUpdate(true);
+    }
+
+    function handleConversationSelection(userId){
+      setToUser(userId);
+      setConversation([]);
+    }
+
+    function handleSendMessage(message) {
+      Socket.emit("PRIVATE_MESSAGE", {
+        to: this.toUser,
+        message: message
+      });
+
+      setConversation(conversation => [{  
+        message: message,
+        fromUserId: currentUser.userId,
+        toUserId: toUser.userId,
+        date: new Date()
+      }, ...conversation]);
+    }
+
+    function handleComingMessage(message) {
+      console.log("Socket ComingMessage: " + JSON.stringify(message));
+     
+      setConversation(conversation => [{  
+        message: message.message,
+        fromUserId: message.userId,
+        toUserId: currentUser.userId,
+        date: new Date()
+      }, ...conversation]);
     }
 
     console.log("Socket Status:" + Socket.connected);
@@ -76,15 +106,15 @@ const useStyles = makeStyles((theme) => ({
       <Container maxWidth="lg" className="app-container">
         <Grid container className="app-container__layout">
           <Grid item xs={3}>
-              <SideBar onlineUsers={onlineUsers} currentUser={currentUser}></SideBar>
+              <SideBar onlineUsers={onlineUsers} currentUser={currentUser} handleUserSelect={handleConversationSelection}></SideBar>
           </Grid>
           <Grid item xs={9}>
               <Grid container className="message-container">
                 <Grid item xs={12} className="message-container__chatArea">
-                  <ChatConversation></ChatConversation>
+                  <ChatConversation toUser={toUser} currentUser={currentUser} conversation={conversation}></ChatConversation>
                 </Grid>
                 <Grid item xs={12} className="message-container__messageArea">
-                  <ChatMessage></ChatMessage>
+                  <ChatMessage toUser={toUser} handleSendMessage={handleSendMessage}></ChatMessage>
                 </Grid>
               </Grid>
           </Grid>
