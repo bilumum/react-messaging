@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -27,9 +28,19 @@ const getStyles = makeStyles((theme) => ({
     },
   }));
 
-  function ChatMessage(params) {
+  function ChatMessage(props) {
       
     const classes = getStyles();
+    let disabled = props.toUser.length > 0 ? false : true;
+    let placeholder = props.toUser.length > 0 ? "Start typing..." : "Select a user and start typing..." ;
+
+    function keyPress(e) {
+      if(e.keyCode == 13){
+        e.preventDefault();
+        props.handleSendMessage(e.target.value);
+        e.target.value = "";
+      }
+    }
 
     return (
         <TextField
@@ -39,9 +50,11 @@ const getStyles = makeStyles((theme) => ({
         multiline
         rows={3}
         defaultValue=""
-        placeholder="Start typing..."
+        placeholder={placeholder}
         variant="outlined"
         fullWidth
+        disabled={disabled}
+        onKeyDown={keyPress}
         />
     );
 }

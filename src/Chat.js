@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
@@ -41,10 +41,30 @@ const useStyles = makeStyles((theme) => ({
 
     const [onlineUsers, setOnlineUsers] = useState([]);
     const [needUpdate, setNeedUpdate] = useState(true);
-    //const [currentUser, setCurrentUser] = useState(props.location.state);
+    const [toUser, _setToUser] = useState("");
+    const [conversation, _setConversation] = useState([]);
+    const [allConversation, _setAllConversation] = useState([]);
 
+    const toUserRef = useRef(toUser);
+    const allConversationRef = useRef([]);
+    const conversationRef = useRef([]);
+
+    const setToUser = data => {
+      toUserRef.current = data;
+      _setToUser(data);
+    };
+
+    const setAllConversation = data => {     
+      allConversationRef.current = data;
+      _setAllConversation(data); 
+    };
+
+    const setConversation = data => {    
+      conversationRef.current = data;
+      _setConversation(data); 
+    };
+    
     useEffect(() => {
-      console.log("useEffect running...");
       if(needUpdate){
         const fetchData = async () => {
           let users = await getOnlineUsers();
@@ -57,34 +77,110 @@ const useStyles = makeStyles((theme) => ({
       }
 
       Socket.on("NEW_JOIN", handleNewJoins);
+      Socket.on("PRIVATE_MESSAGE", handleComingMessage);
 
       return () => {
-        console.log("UseEffect CLEARED....");
         Socket.off('NEW_JOIN', handleNewJoins);
+        Socket.off('PRIVATE_MESSAGE', handleComingMessage);
       };
         
     }, [needUpdate]);
 
     function handleNewJoins(message) {
-      console.log(message);
       setNeedUpdate(true);
+    }
+
+    function handleConversationSelection(userId){
+      setToUser(userId);
+
+      let currentConversation = allConversationRef.current.find(c => c.toUser === userId);
+
+      if(!currentConversation){
+        setAllConversation([{
+          toUser: userId,
+          messages: []
+        }, ...allConversationRef.current]);
+
+        setConversation([]);
+      }
+      else{
+        setConversation([...currentConversation.messages]);
+      }
+    }
+
+    function handleSendMessage(message) {
+      Socket.emit("PRIVATE_MESSAGE", {
+        to: this.toUser,
+        message: message
+      });
+
+      setConversation([{  
+        message: message,
+        fromUserId: currentUser.userId,
+        toUserId: toUser,
+        date: new Date()
+      }, ...conversationRef.current]);
+
+      let _allConversation = [...allConversationRef.current];
+      let currentConversation = _allConversation.find(c => c.toUser === toUser);
+      currentConversation.messages = [...conversationRef.current];
+
+      setAllConversation(_allConversation);
+    }
+
+    function handleComingMessage(message) {
+      // console.log("Socket ComingMessage: " + JSON.stringify(message));
+
+      // console.log("Mesaj Gelen Kullanıcı: " + message.userId);
+      // console.log("Chat için seçilen kullanıcı: " + toUserRef.current);
+     
+      if(message.userId === toUserRef.current){
+        setConversation([{  
+          message: message.message,
+          fromUserId: message.userId,
+          toUserId: currentUser.userId,
+          date: new Date()
+        }, ...conversationRef.current]);
+      }
+
+      if(!allConversationRef.current) allConversationRef.current = [];
+
+      let _allConversation = [...allConversationRef.current];
+      let userConversation = _allConversation.find(c => c.toUser === message.userId );
+      if(!userConversation){
+        userConversation = {
+          toUser: message.userId,
+          messages: []
+        }
+
+        _allConversation.push(userConversation);
+      }
+
+      userConversation.messages.unshift({  
+        message: message.message,
+        fromUserId: message.userId,
+        toUserId: currentUser.userId,
+        date: new Date()
+      });
+
+      setAllConversation(_allConversation);
     }
 
     console.log("Socket Status:" + Socket.connected);
 
     return (
-      <Container maxWidth="lg" className="app-container">
+      <Container maxWidth="md" className="app-container">
         <Grid container className="app-container__layout">
-          <Grid item xs={3}>
-              <SideBar onlineUsers={onlineUsers} currentUser={currentUser}></SideBar>
+          <Grid item xs={4}>
+              <SideBar onlineUsers={onlineUsers} currentUser={currentUser} handleUserSelect={handleConversationSelection}></SideBar>
           </Grid>
-          <Grid item xs={9}>
+          <Grid item xs={8} style={{height:"100%"}}>
               <Grid container className="message-container">
                 <Grid item xs={12} className="message-container__chatArea">
-                  <ChatConversation></ChatConversation>
+                  <ChatConversation toUser={toUser} currentUser={currentUser} conversation={conversation}></ChatConversation>
                 </Grid>
                 <Grid item xs={12} className="message-container__messageArea">
-                  <ChatMessage></ChatMessage>
+                  <ChatMessage toUser={toUser} handleSendMessage={handleSendMessage}></ChatMessage>
                 </Grid>
               </Grid>
           </Grid>
