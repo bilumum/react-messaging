@@ -26,18 +26,20 @@ const conversationMessageToStyle = {
     padding: "13px",
     backgroundColor: "#00ffff38",
     borderRadius: "15px",
-    fontSize: "12px"
+    fontSize: "12px",
+    display: "inline-flex"
 }
 
 const conversationMessageFromStyle = {
     padding: "13px",
     backgroundColor: "rgb(68 71 93 / 13%)",
     borderRadius: "15px",
-    fontSize: "12px"
+    fontSize: "12px",
+    display: "inline-flex"
 }
 
 function ChatConversation(props){
-    console.log(props);
+    // console.log();
     return (
         <Box style={conversationContainerStyle}>
             {props.conversation.map(message => {
