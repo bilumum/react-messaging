@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Badge from '@material-ui/core/Badge';
 
 const divStyle = {
     width: '48px',
@@ -16,9 +17,12 @@ class Avatar extends React.Component{
         const profileURL = this.props.URL || 'https://www.placecage.com/48/48';
         
         return (
-            <div style={divStyle}>
-                <img src={profileURL}></img>
-            </div>
+            
+                <div style={divStyle}>
+                    <img src={profileURL}></img>
+                </div>
+            
+           
         );
     }
 }

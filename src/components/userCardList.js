@@ -12,19 +12,23 @@ class UserCardList extends React.Component{
         this.setState({
             selectedUser: userId
         });
-        console.log(this.props);
+      
         this.props.handleUserSelect(userId);
     }
 
     render(){
         const onlineUsers = this.props.onlineUsers;
-        
+        console.log(this.props);
         if (onlineUsers.length > 0) {
             return (
                 <div>
                     {onlineUsers.map(profile => {
                         let isSelected = profile.userId === this.state.selectedUser;
-                        return <UserCard key={profile.userId} isSelected={isSelected} handleSelect={this.handleSelect} {...profile}></UserCard>
+                        let conversation = {};
+                        if(this.props.conversations){
+                            conversation = this.props.conversations.find(c => c.toUser === profile.userId);
+                        }
+                        return <UserCard key={profile.userId} conversation={conversation} isSelected={isSelected} handleSelect={this.handleSelect} {...profile}></UserCard>
                         })
                     }
                 </div>

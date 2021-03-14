@@ -8,12 +8,13 @@ class SideBar extends React.Component{
 
         const onlineUsers = this.props.onlineUsers;
         const currentUser = this.props.currentUser;
+        const conversations = this.props.conversations;
         const handleUserSelect = this.props.handleUserSelect;
 
         return (
             <div className="sidebar">
                 <CurrentUser {...currentUser}></CurrentUser>
-                <UserCardList onlineUsers={onlineUsers} handleUserSelect={handleUserSelect}></UserCardList>                
+                <UserCardList onlineUsers={onlineUsers} conversations={conversations} handleUserSelect={handleUserSelect}></UserCardList>                
             </div>
         );
     }
