@@ -1,6 +1,6 @@
 # Simple React Chat Application
 
-This project created with Reactjs. I created this application for learning Reactjs. I tried to use many of react features like components both functional and class, hooks, router ext.
+This project was created with Reactjs. I created this application for learning Reactjs. I tried to use many of react features like components both functional and class, state, hooks, router ext.
 
 I used material-ui components for frontend.
 
@@ -17,7 +17,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 ### `Backend`
 
-You need to download and run [this](https://github.com/bilumum/messaging-services) nodejs backend in order to run this application.
+You need to download and run [this](https://github.com/bilumum/messaging-services) nodejs server in order to run this application.
 
 ## Running Example (Video)
 
