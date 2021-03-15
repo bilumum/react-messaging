@@ -3,6 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Avatar from './avatar';
 import './userCard.css';
+import Badge from '@material-ui/core/Badge';
+
 
 
 class UserCard extends React.Component{
@@ -14,14 +16,26 @@ class UserCard extends React.Component{
     render(){       
         var profile = this.props;
         let avatar_url = `https://ui-avatars.com/api/?name=${profile.name}+${profile.surname}&size=48`;
+        let unReadMessageCount = () => {
+            let count = undefined;
+            if(this.props.conversation){
+                if(this.props.conversation.messages){
+                    count = this.props.conversation.messages.filter(message => message.isRead === false).length;
+                }
+            }
 
+            return count;
+        }
+        
         return (
             <div className="userCard" data-selected={this.props.isSelected} onClick={this.handleClick}>
                 <Avatar URL={avatar_url}></Avatar>
-                <div className="userInfo">
-                    <span className="userInfo__userName">{profile.name} {profile.surname}</span>
-                    <span className="userInfo__conversationText">Son konuşmadan bir kesit olacak burada....</span>
-                </div>
+                <Badge badgeContent={unReadMessageCount()} color="secondary">
+                    <div className="userInfo">
+                        <span className="userInfo__userName">{profile.name} {profile.surname}</span>
+                        <span className="userInfo__conversationText">Son konuşmadan bir kesit olacak burada....</span>
+                    </div>
+                </Badge>
             </div>
         );
     }

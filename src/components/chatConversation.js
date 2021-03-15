@@ -39,7 +39,6 @@ const conversationMessageFromStyle = {
 }
 
 function ChatConversation(props){
-    // console.log();
     return (
         <Box style={conversationContainerStyle}>
             {props.conversation.map(message => {

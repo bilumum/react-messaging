@@ -39,15 +39,21 @@ const useStyles = makeStyles((theme) => ({
     const history = useHistory();
     const currentUser = history.location.user;
 
-    const [onlineUsers, setOnlineUsers] = useState([]);
+    const [onlineUsers, _setOnlineUsers] = useState([]);
     const [needUpdate, setNeedUpdate] = useState(true);
     const [toUser, _setToUser] = useState("");
     const [conversation, _setConversation] = useState([]);
     const [allConversation, _setAllConversation] = useState([]);
 
+    const onlineUsersRef = useRef(onlineUsers);
     const toUserRef = useRef(toUser);
     const allConversationRef = useRef([]);
     const conversationRef = useRef([]);
+
+    const setOnlineUsers = data => {
+      onlineUsersRef.current = data;
+      _setOnlineUsers(data);
+    };
 
     const setToUser = data => {
       toUserRef.current = data;
@@ -68,7 +74,8 @@ const useStyles = makeStyles((theme) => ({
       if(needUpdate){
         const fetchData = async () => {
           let users = await getOnlineUsers();
-          users = users.filter(item => item.userId !== currentUser.userId)
+          users = users.filter(item => item.userId !== currentUser.userId);
+          console.log(onlineUsers);
           setOnlineUsers(users);
         };
 
@@ -104,6 +111,7 @@ const useStyles = makeStyles((theme) => ({
         setConversation([]);
       }
       else{
+        currentConversation.messages.map( message => message.isRead = true);
         setConversation([...currentConversation.messages]);
       }
     }
@@ -129,20 +137,17 @@ const useStyles = makeStyles((theme) => ({
     }
 
     function handleComingMessage(message) {
-      // console.log("Socket ComingMessage: " + JSON.stringify(message));
 
-      // console.log("Mesaj Gelen Kullanıcı: " + message.userId);
-      // console.log("Chat için seçilen kullanıcı: " + toUserRef.current);
-     
       if(message.userId === toUserRef.current){
         setConversation([{  
           message: message.message,
           fromUserId: message.userId,
           toUserId: currentUser.userId,
-          date: new Date()
+          date: new Date(),
+          isRead: true
         }, ...conversationRef.current]);
       }
-
+    
       if(!allConversationRef.current) allConversationRef.current = [];
 
       let _allConversation = [...allConversationRef.current];
@@ -160,7 +165,8 @@ const useStyles = makeStyles((theme) => ({
         message: message.message,
         fromUserId: message.userId,
         toUserId: currentUser.userId,
-        date: new Date()
+        date: new Date(),
+        isRead: message.userId === toUserRef.current
       });
 
       setAllConversation(_allConversation);
@@ -172,7 +178,7 @@ const useStyles = makeStyles((theme) => ({
       <Container maxWidth="md" className="app-container">
         <Grid container className="app-container__layout">
           <Grid item xs={4}>
-              <SideBar onlineUsers={onlineUsers} currentUser={currentUser} handleUserSelect={handleConversationSelection}></SideBar>
+              <SideBar onlineUsers={onlineUsers} currentUser={currentUser} conversations={allConversation} handleUserSelect={handleConversationSelection}></SideBar>
           </Grid>
           <Grid item xs={8} style={{height:"100%"}}>
               <Grid container className="message-container">
