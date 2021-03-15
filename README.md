@@ -2,7 +2,8 @@
 
 This project created with Reactjs. I created this application for learning Reactjs. I tried to use many of react features like components both functional and class, hooks, router ext.
 
-I used material-ui components for frontend. 
+I used material-ui components for frontend.
+
 I used socket.io for client-server communication.
 
 ## Available Scripts
